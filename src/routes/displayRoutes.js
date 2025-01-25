@@ -1,9 +1,9 @@
-const express = require('express');
-const router = express.Router();
-const displayController = require('../controllers/displayController');
+const express = require('express')
+const router = express.Router()
+const displayController = require('../controllers/displayController')
 
 // Define routes
-router.get('/', displayController.getDisplay);
-router.post('/', displayController.updateDisplay);
+router.get('/', displayController.getDisplay)
+router.post('/', displayController.updateDisplay)
 
-module.exports = router;
+module.exports = router
