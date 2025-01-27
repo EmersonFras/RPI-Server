@@ -3,6 +3,7 @@ const cors = require('cors')
 const corsOptions = require('./config/corsOptions')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
+const albumRoutes = require('./routes/albumRoutes')
 const displayRoutes = require('./routes/displayRoutes')
 const authRoutes = require('./routes/authRoutes')
 const callbackRoutes = require('./routes/callbackRoutes')
@@ -21,6 +22,7 @@ app.use(express.urlencoded({extended: true}))
 
 // Routes
 app.use('/api/display', displayRoutes)
+app.use('/api/album', albumRoutes)
 app.use('/auth', authRoutes)
 app.use('/callback', callbackRoutes)
 
