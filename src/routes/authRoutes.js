@@ -1,11 +1,15 @@
 const express = require('express')
 const router = express.Router()
+const axios = require('axios')
+const jwt = require('jsonwebtoken')
 const querystring = require('querystring')
 require('dotenv').config()
 
 const {
     SPOTIFY_CLIENT_ID,
+    SPOTIFY_CLIENT_SECRET,
     SPOTIFY_REDIRECT_URI,
+    JWT_KEY
 } = process.env;
 
 // Define routes
@@ -19,6 +23,75 @@ router.get('/', function(req, res) {
     })
 
     res.redirect(`https://accounts.spotify.com/authorize?${queryParams}`)
+})
+
+router.post('/logout', (req, res) => {
+    // Clear the JWT cookie
+    res.clearCookie('jwt', {
+        httpOnly: true,
+        secure: true, 
+        sameSite: 'None', 
+    });
+
+    res.status(200).json({ success: true, message: 'Logged out successfully' });
+})
+
+router.post('/refresh', async (req, res) => {
+    const refresh_token = req.cookies.spotify_refresh_token
+
+    if (!refresh_token) {
+        return res.status(401).json({ success: false, message: 'Refresh token not found' })
+    }
+
+    try {
+        const response = await axios.post(
+            SPOTIFY_TOKEN_URL,
+            querystring.stringify({
+                grant_type: 'refresh_token',
+                refresh_token,
+                client_id: SPOTIFY_CLIENT_ID,
+                client_secret: SPOTIFY_CLIENT_SECRET,
+            }),
+            { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+        )
+
+        const { access_token } = response.data
+
+        // Update access token cookie
+        res.cookie('spotify_access_token', access_token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'none',
+            maxAge: 3600 * 1000, // 1 hour
+        })
+
+        res.status(200).json({ success: true })
+    } catch (error) {
+        console.error('Error refreshing token:', error.response?.data || error.message)
+        res.status(500).json({ success: false, message: 'Error refreshing token' })
+    }
+})
+
+// Middleware to verify JWT
+const verifyToken = (req, res, next) => {
+    const token = req.cookies.jwt // JWT stored in cookies
+
+    if (!token) {
+        return res.status(401).json({ isAuthenticated: false }) // No token, not authenticated
+    }
+
+    jwt.verify(token, JWT_KEY, (err, decoded) => {
+        if (err) {
+            return res.status(401).json({ isAuthenticated: false }) // Invalid token
+        }
+        req.user = decoded // Add the decoded JWT data to the request object
+        next() // Proceed to the next middleware
+    })
+}
+
+// Auth check route
+router.get('/check', verifyToken, (req, res) => {
+    res.status(200).json({ isAuthenticated: true }) // Token is valid
 })
 
 module.exports = router
