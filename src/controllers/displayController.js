@@ -6,14 +6,14 @@ exports.getDisplay = (req, res) => {
     if (err) {
       return res.status(500).json({ error: 'Failed to fetch data' })
     }
-    res.json(row || { start_time: null, stop_time: null })
+    res.json(row || { start_time: null, stop_time: null, text: null })
   })
 }
 
 // Update display settings
 exports.updateDisplay = (req, res) => {
-  const { start_time, stop_time } = req.body
-  displayModel.updateDisplaySettings(start_time, stop_time, (err, changes) => {
+  const { start_time, stop_time, text } = req.body
+  displayModel.updateDisplaySettings(start_time, stop_time, text, (err, changes) => {
     if (err) {
       return res.status(500).json({ error: 'Failed to update data' })
     }
