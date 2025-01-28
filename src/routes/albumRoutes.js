@@ -1,14 +1,9 @@
 const express = require('express')
 const router = express.Router()
 const axios = require('axios')
-import { verifyToken } from '../middleware/auth'
 
 router.get('/', async (req, res) => {
-    if (verifyToken(req, res)) {
-        return res.status(401).json({ success: false, message: 'Unauthorized' })
-    }
-
-    const accessToken = req.user
+    const accessToken = req.user.access_token
 
     try {
         const response = await axios.get('https://api.spotify.com/v1/search', {

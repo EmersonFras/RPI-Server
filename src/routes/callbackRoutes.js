@@ -35,17 +35,17 @@ router.post('/', async (req, res) => {
             }
         )
 
+        
         const { access_token, refresh_token } = response.data
-
         const token = jwt.sign({ access_token, refresh_token }, JWT_KEY, {expiresIn: '1h'})
-
+        
         res.cookie('jwt', token, {
             httpOnly: true,
             secure: true,
             sameSite: 'None',
             maxAge: 3600 * 1000, // 1 hour
         })
-
+        console.log('Access token retrieved successfully')
         res.status(200).json({ success: true })
     } catch (error) {
         console.error('Error retrieving access token:', error.response?.data || error.message)

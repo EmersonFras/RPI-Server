@@ -6,17 +6,21 @@ const verifyToken = (req, res, next) => {
     const token = req.cookies.jwt // JWT stored in cookies
 
     if (!token) {
-        return res.status(200).json({ isAuthenticated: false }) // No token, not authenticated
+        req.identifier = 'no_token'
+        return next()
+        // return res.status(200).json({ isAuthenticated: false, identifier: req.identifier }) // No token, not authenticated
     }
 
     jwt.verify(token, JWT_KEY, (err, decoded) => {
         if (err) {
-            return res.status(200).json({ isAuthenticated: false }) // Invalid token
+            req.identifier = 'invalid_token'
+            return next()
+            // return res.status(200).json({ isAuthenticated: false, identifier: req.identifier }) // Invalid token
         }
         req.user = decoded // Add the decoded JWT data to the request object
-        next() // Proceed to the next middleware
+        req.identifier = 'valid_token'
+        return next() // Proceed to the next middleware
     })
 }
 
-
-module.exports = { verifyToken}
+module.exports = verifyToken

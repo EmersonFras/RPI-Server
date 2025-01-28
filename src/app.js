@@ -7,6 +7,7 @@ const albumRoutes = require('./routes/albumRoutes')
 const displayRoutes = require('./routes/displayRoutes')
 const authRoutes = require('./routes/authRoutes')
 const callbackRoutes = require('./routes/callbackRoutes')
+const verifyToken = require('./middleware/auth')
 
 const app = express()
 
@@ -18,6 +19,7 @@ app.use(bodyParser.json())
 app.use(cors(corsOptions))
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
+app.use(verifyToken)
 
 
 // Routes

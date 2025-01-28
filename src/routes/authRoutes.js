@@ -3,7 +3,6 @@ const router = express.Router()
 const axios = require('axios')
 const querystring = require('querystring')
 require('dotenv').config()
-const { verifyToken } = require('../middleware/auth')
 
 const {
     SPOTIFY_CLIENT_ID,
@@ -31,8 +30,7 @@ router.post('/logout', (req, res) => {
         httpOnly: true,
         secure: true, 
         sameSite: 'None', 
-    });
-
+    })
     res.status(200).json({ success: true, message: 'Logged out successfully' });
 })
 
@@ -60,7 +58,7 @@ router.post('/refresh', async (req, res) => {
         // Update access token cookie
         res.cookie('spotify_access_token', access_token, {
             httpOnly: true,
-            secure: false,
+            secure: true,
             sameSite: 'none',
             maxAge: 3600 * 1000, // 1 hour
         })
@@ -73,8 +71,11 @@ router.post('/refresh', async (req, res) => {
 })
 
 // Auth check route
-router.get('/check', verifyToken, (req, res) => {
-    res.status(200).json({ isAuthenticated: true }) // Token is valid
+router.get('/check', (req, res) => {
+    if (req.identifier !== 'valid_token') {
+        return res.status(200).json({ isAuthenticated: false }) 
+    }
+    return res.status(200).json({ isAuthenticated: true }) // Token is valid
 })
 
 module.exports = router
