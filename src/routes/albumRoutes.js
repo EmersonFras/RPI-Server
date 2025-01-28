@@ -1,8 +1,13 @@
 const express = require('express')
 const router = express.Router()
 const axios = require('axios')
+const { spawn } = require('child_process')
 
 router.get('/', async (req, res) => {
+    if (req.identifier !== 'valid_token') {
+        return res.status(401).json({ isAuthenticated: false }) 
+    }
+
 
     const accessToken = req.user.access_token
 
@@ -22,7 +27,13 @@ router.get('/', async (req, res) => {
     }
 })
 
+let scriptProcess
+
 router.post('/display', (req, res) => {
+    if (req.identifier !== 'valid_token') {
+        return res.status(401).json({ isAuthenticated: false }) 
+    }
+
     if (!scriptProcess) {
         const { img } = req.body
 

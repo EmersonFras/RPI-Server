@@ -11,8 +11,6 @@ const verifyToken = require('./middleware/auth')
 
 const app = express()
 
-
-
 // Middleware
 app.use(cookieParser())
 app.use(bodyParser.json())

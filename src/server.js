@@ -1,12 +1,13 @@
 const app = require('./app')
+const https = require('https')
+const fs = require('fs')
 require('dotenv').config()
 
-const PORT = process.env.PORT || 3001
+const options = {
+    key: fs.readFileSync('/etc/letsencrypt/live/rpi-display.duckdns.org/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/rpi-display.duckdns.org/fullchain.pem')
+}
 
-app.listen(PORT, (error) =>{
-    if(!error)
-        console.log("Server is Successfully Running, and App is listening on port "+ PORT)
-    else 
-        console.log("Error occurred, server can't start", error)
-    }
-)   
+https.createServer(options, app).listen(3000, () => {
+    console.log('Server running at https://rpi-display:3000/');
+})
