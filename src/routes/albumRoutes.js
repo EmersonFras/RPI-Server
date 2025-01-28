@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const axios = require('axios')
-const { spawn } = require('child_process')
+const scriptManager = require('../utils/scriptManager')
 
 router.get('/', async (req, res) => {
     if (req.identifier !== 'valid_token') {
@@ -30,26 +30,28 @@ router.get('/', async (req, res) => {
 let scriptProcess
 
 router.post('/display', (req, res) => {
+    
     if (req.identifier !== 'valid_token') {
         return res.status(401).json({ isAuthenticated: false }) 
     }
 
-    if (!scriptProcess) {
+    if (scriptProcess) {
+        scriptProcess.kill('SIGTERM')
+        scriptProcess = null
+        res.send('Script stopped')
+    }
+
+    try {
+        if (scriptManager.isRunning()) {
+            scriptManager.stopScript()
+        }
+
         const { img } = req.body
 
-        scriptProcess = spawn('sudo', ['../AlbumArt/album_art', img], {
-            stdio: 'inherit',  // Inherit the stdio to see output in your server console
-        })
-
-        // Reset the scriptProcess variable when the script exits
-        scriptProcess.on('close', (code) => {
-            console.log(`Child process exited with code ${code}`)
-            scriptProcess = null  // Reset on exit
-        })
-
-        res.send('Script started')
-    } else {
-        res.send('Script is already running')
+        scriptManager.startScript('../AlbumArt/album_art', [img])
+        return res.send('Script started')
+    } catch (error) {
+        return res.status(400).send(error.message)
     }
 })
 

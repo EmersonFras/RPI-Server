@@ -7,6 +7,7 @@ const albumRoutes = require('./routes/albumRoutes')
 const displayRoutes = require('./routes/displayRoutes')
 const authRoutes = require('./routes/authRoutes')
 const callbackRoutes = require('./routes/callbackRoutes')
+const apiRoutes = require('./routes/apiRoutes')
 const verifyToken = require('./middleware/auth')
 
 const app = express()
@@ -23,6 +24,7 @@ app.use(verifyToken)
 // Routes
 app.use('/api/display', displayRoutes)
 app.use('/api/album', albumRoutes)
+app.use('/api/', apiRoutes)
 app.use('/auth', authRoutes)
 app.use('/callback', callbackRoutes)
 
