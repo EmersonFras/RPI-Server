@@ -1,8 +1,8 @@
-const displayModel = require('../models/displayModel')
+const weatherModel = require('../models/weatherModel')
 
 // Get display settings
-exports.getDisplay = (req, res) => {
-  displayModel.getDisplaySettings((err, row) => {
+exports.getWeatherDisplay = (req, res) => {
+  weatherModel.getWeatherDisplaySettings((err, row) => {
     if (err) {
       return res.status(500).json({ error: 'Failed to fetch data' })
     }
@@ -11,9 +11,9 @@ exports.getDisplay = (req, res) => {
 }
 
 // Update display settings
-exports.updateDisplay = (req, res) => {
+exports.updateWeatherDisplay = (req, res) => {
   const { start_time, stop_time, text } = req.body
-  displayModel.updateDisplaySettings(start_time, stop_time, text, (err, changes) => {
+  weatherModel.updateWeatherDisplaySettings(start_time, stop_time, text, (err, changes) => {
     if (err) {
       return res.status(500).json({ error: 'Failed to update data' })
     }

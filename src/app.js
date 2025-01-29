@@ -4,7 +4,7 @@ const corsOptions = require('./config/corsOptions')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const albumRoutes = require('./routes/albumRoutes')
-const displayRoutes = require('./routes/displayRoutes')
+const weatherRoutes = require('./routes/weatherRoutes')
 const authRoutes = require('./routes/authRoutes')
 const callbackRoutes = require('./routes/callbackRoutes')
 const apiRoutes = require('./routes/apiRoutes')
@@ -22,7 +22,7 @@ app.use(verifyToken)
 
 
 // Routes
-app.use('/api/display', displayRoutes)
+app.use('/api/weather', weatherRoutes)
 app.use('/api/album', albumRoutes)
 app.use('/api/', apiRoutes)
 app.use('/auth', authRoutes)

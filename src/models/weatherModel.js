@@ -38,12 +38,12 @@ db.run(
 
 // Export database queries
 module.exports = {
-  getDisplaySettings: (callback) => {
+  getWeatherDisplaySettings: (callback) => {
     db.get(`SELECT * FROM display LIMIT 1`, [], (err, row) => {
       callback(err, row)
     })
   },
-  updateDisplaySettings: (start, stop, text, callback) => {
+  updateWeatherDisplaySettings: (start, stop, text, callback) => {
     db.run(
       `UPDATE display SET start_time = ?, stop_time = ?, text = ? WHERE id = 1`,
       [start, stop, text],
