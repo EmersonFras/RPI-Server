@@ -27,18 +27,11 @@ router.get('/', async (req, res) => {
     }
 })
 
-let scriptProcess
 
 router.post('/display', (req, res) => {
     
     if (req.identifier !== 'valid_token') {
         return res.status(401).json({ isAuthenticated: false }) 
-    }
-
-    if (scriptProcess) {
-        scriptProcess.kill('SIGTERM')
-        scriptProcess = null
-        res.send('Script stopped')
     }
 
     try {
