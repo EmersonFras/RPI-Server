@@ -42,9 +42,9 @@ router.post('/display', (req, res) => {
         const { img } = req.body
 
         scriptManager.startScript('../AlbumArt/album_art', [img])
-        return res.send('Script started')
+        return res.status(200).json({message: 'Script started'})
     } catch (error) {
-        return res.status(400).send(error.message)
+        return res.status(400).json({message: error.message})
     }
 })
 
