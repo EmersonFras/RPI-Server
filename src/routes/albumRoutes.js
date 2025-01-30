@@ -36,6 +36,7 @@ router.post('/display', (req, res) => {
 
     try {
         if (scriptManager.isRunning()) {
+            console.log('Somethings running')
             scriptManager.stopScript()
         }
 

@@ -10,13 +10,10 @@ router.post('/', weatherController.updateWeatherDisplay)
 router.post('/display', (req, res) => {
     try {
         if (scriptManager.isRunning()) {
+            console.log('Somethings running')
             scriptManager.stopScript()
         }
 
-        /**
-         * add --led-slowdown-gpio=4 to the C file
-         * Make the weather app utilize the sql data
-         */
         scriptManager.startScript('../Weather/weather_app')
         return res.status(200).json({message: 'Script started'})
     } catch (error) {
