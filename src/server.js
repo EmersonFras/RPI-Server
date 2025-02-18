@@ -9,5 +9,5 @@ const options = {
 }
 
 https.createServer(options, app).listen(3000, () => {
-    console.log('Server running at https://rpi-display:3000/');
+    console.log('Server running at https://rpi-display.duckdns.org:3000');
 })
